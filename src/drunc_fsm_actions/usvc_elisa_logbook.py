@@ -1,9 +1,11 @@
 import requests
-
-from drunc.fsm.actions.utils import get_dotdrunc_json
-from drunc.fsm.core import FSMAction
-from drunc.fsm.exceptions import CannotSendElisaMessage, DotDruncJsonIncorrectFormat
-from drunc.utils.utils import get_logger
+from drunc_core.fsm.actions.utils import get_dotdrunc_json
+from drunc_core.fsm.core import FSMAction
+from drunc_core.fsm.exceptions import (
+    CannotSendElisaMessage,
+    DotDruncJsonIncorrectFormat,
+)
+from drunc_core.utils.utils import get_logger
 
 
 class ElisaLogbook(FSMAction):

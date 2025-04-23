@@ -1,4 +1,4 @@
-from drunc.fsm.core import FSMAction
+from drunc_core.fsm.core import FSMAction
 
 
 class MasterSendFLCommand(FSMAction):

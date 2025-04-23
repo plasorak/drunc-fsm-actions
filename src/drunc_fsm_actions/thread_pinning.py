@@ -2,14 +2,13 @@ import getpass
 from os import environ
 
 import conffwk
+from drunc.process_manager.oks_parser import collect_apps  # /!\
+from drunc.process_manager.utils import get_rte_script  # /!\
+from drunc_core.exceptions import DruncSetupException
+from drunc_core.fsm.core import FSMAction
+from drunc_core.fsm.exceptions import ThreadPinningFailed
+from drunc_core.utils.utils import get_logger
 from sh import Command, ErrorReturnCode
-
-from drunc.exceptions import DruncSetupException
-from drunc.fsm.core import FSMAction
-from drunc.fsm.exceptions import ThreadPinningFailed
-from drunc.process_manager.oks_parser import collect_apps
-from drunc.process_manager.utils import get_rte_script
-from drunc.utils.utils import get_logger
 
 
 class ThreadPinning(FSMAction):

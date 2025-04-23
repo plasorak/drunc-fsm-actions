@@ -2,7 +2,6 @@ import os
 import time
 
 import pytest
-
 from drunc.connectivity_service.client import ConnectivityServiceClient
 from drunc.exceptions import DruncException
 

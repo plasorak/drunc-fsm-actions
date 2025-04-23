@@ -1,11 +1,11 @@
 import json
 
-from drunc.fsm.exceptions import (
+from drunc_core.fsm.exceptions import (
     DotDruncJsonIncorrectFormat,
     DotDruncJsonNotFound,
     InvalidRunType,
 )
-from drunc.utils.utils import expand_path
+from drunc_core.utils.utils import expand_path
 
 
 def validate_run_type(run_type: str) -> str:
@@ -44,5 +44,3 @@ def get_dotdrunc_json(path: str = "~/.drunc.json"):
         )
 
     return dotdrunc
-
-

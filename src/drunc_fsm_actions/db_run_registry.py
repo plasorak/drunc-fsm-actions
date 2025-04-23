@@ -5,16 +5,15 @@ import tempfile
 import requests
 from daqconf.consolidate import consolidate_db
 from daqconf.jsonify import jsonify_xml_data
-
-from drunc.fsm.actions.utils import get_dotdrunc_json
-from drunc.fsm.core import FSMAction
-from drunc.fsm.exceptions import (
+from drunc_core.fsm.actions.utils import get_dotdrunc_json
+from drunc_core.fsm.core import FSMAction
+from drunc_core.fsm.exceptions import (
     CannotGetSoftwareVersion,
     CannotInsertRunNumber,
     CannotUpdateStopTime,
     DotDruncJsonIncorrectFormat,
 )
-from drunc.utils.utils import get_logger
+from drunc_core.utils.utils import get_logger
 
 
 class DBRunRegistry(FSMAction):

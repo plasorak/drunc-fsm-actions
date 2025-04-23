@@ -1,17 +1,17 @@
 import inspect
 
-import drunc.fsm.exceptions as fsme
-from drunc.exceptions import DruncSetupException
-from drunc.fsm.actions.db_run_registry import DBRunRegistry
-from drunc.fsm.actions.file_logbook import FileLogbook
-from drunc.fsm.actions.file_run_registry import FileRunRegistry
-from drunc.fsm.actions.some_test_action import SomeTestAction
-from drunc.fsm.actions.thread_pinning import ThreadPinning
-from drunc.fsm.actions.timing.master_send_fl_command import MasterSendFLCommand
-from drunc.fsm.actions.trigger_rate_specifier import TriggerRateSpecifier
-from drunc.fsm.actions.user_provided_run_number import UserProvidedRunNumber
-from drunc.fsm.actions.usvc_elisa_logbook import ElisaLogbook
-from drunc.fsm.actions.usvc_provided_run_number import UsvcProvidedRunNumber
+import drunc_core.fsm.exceptions as fsme
+from drunc_core.exceptions import DruncSetupException
+from drunc_core.fsm.actions.db_run_registry import DBRunRegistry
+from drunc_core.fsm.actions.file_logbook import FileLogbook
+from drunc_core.fsm.actions.file_run_registry import FileRunRegistry
+from drunc_core.fsm.actions.some_test_action import SomeTestAction
+from drunc_core.fsm.actions.thread_pinning import ThreadPinning
+from drunc_core.fsm.actions.timing.master_send_fl_command import MasterSendFLCommand
+from drunc_core.fsm.actions.trigger_rate_specifier import TriggerRateSpecifier
+from drunc_core.fsm.actions.user_provided_run_number import UserProvidedRunNumber
+from drunc_core.fsm.actions.usvc_elisa_logbook import ElisaLogbook
+from drunc_core.fsm.actions.usvc_provided_run_number import UsvcProvidedRunNumber
 
 
 class FSMActionFactory:

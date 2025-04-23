@@ -11,7 +11,6 @@ import time
 import click
 import psutil
 import pytest
-
 from drunc.exceptions import DruncSetupException
 from drunc.utils.utils import (
     ControlType,

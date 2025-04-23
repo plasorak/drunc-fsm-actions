@@ -1,5 +1,5 @@
-from drunc.fsm.core import FSMAction
-from drunc.utils.utils import now_str
+from drunc_core.fsm.core import FSMAction
+from drunc_core.utils.utils import now_str
 
 
 class FileLogbook(FSMAction):

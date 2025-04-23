@@ -1,8 +1,7 @@
 import os
 
 from daqconf.consolidate import consolidate_db
-
-from drunc.fsm.core import FSMAction
+from drunc_core.fsm.core import FSMAction
 
 
 class FileRunRegistry(FSMAction):

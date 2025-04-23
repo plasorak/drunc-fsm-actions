@@ -1,6 +1,6 @@
 from enum import Enum
 
-from drunc.fsm.core import FSMAction
+from drunc_core.fsm.core import FSMAction
 
 
 class an_enum(Enum):

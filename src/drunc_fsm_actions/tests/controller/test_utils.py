@@ -1,5 +1,4 @@
 import pytest
-
 from drunc.controller.exceptions import DruncCommandException
 
 
@@ -39,11 +38,10 @@ def test_get_segment_lookup_timeout(load_test_config):
 
 
 def test_address_command():
+    from drunc.controller.utils import address_command
     from druncschema.controller_pb2 import AddressedCommand
     from druncschema.generic_pb2 import PlainText
     from google.protobuf import any_pb2
-
-    from drunc.controller.utils import address_command
 
     class MockNode:
         def __init__(self, name):

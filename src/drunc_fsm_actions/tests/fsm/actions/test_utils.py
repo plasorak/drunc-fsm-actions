@@ -3,7 +3,6 @@ import os
 import tempfile
 
 import pytest
-
 from drunc.exceptions import DruncException
 from drunc.fsm.actions.utils import get_dotdrunc_json, validate_run_type
 from drunc.fsm.exceptions import DotDruncJsonIncorrectFormat, DotDruncJsonNotFound
