@@ -1,3 +1,4 @@
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 
 
@@ -10,3 +11,6 @@ class TriggerRateSpecifier(FSMAction):
     ):
         _input_data["trigger_rate"] = trigger_rate
         return _input_data
+
+
+register_action("trigger-rate-specifier", TriggerRateSpecifier)

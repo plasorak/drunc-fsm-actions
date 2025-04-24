@@ -1,5 +1,6 @@
 from enum import Enum
 
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 
 
@@ -26,3 +27,6 @@ class SomeTestAction(FSMAction):
         _input_data["some_str"] = some_str
         _input_data["some_float"] = some_float
         return _input_data
+
+
+register_action("test-action", SomeTestAction)

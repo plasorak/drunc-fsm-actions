@@ -5,7 +5,7 @@ import tempfile
 import requests
 from daqconf.consolidate import consolidate_db
 from daqconf.jsonify import jsonify_xml_data
-from drunc_core.fsm.actions.utils import get_dotdrunc_json
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 from drunc_core.fsm.exceptions import (
     CannotGetSoftwareVersion,
@@ -14,6 +14,8 @@ from drunc_core.fsm.exceptions import (
     DotDruncJsonIncorrectFormat,
 )
 from drunc_core.utils.utils import get_logger
+
+from drunc_fsm_actions.utils import get_dotdrunc_json
 
 
 class DBRunRegistry(FSMAction):
@@ -132,3 +134,6 @@ class DBRunRegistry(FSMAction):
             error = f"connection to {self.API_SOCKET} timed out using {__name__}"
             self.log.error(error)
             raise CannotUpdateStopTime(error) from exc
+
+
+register_action("db-run-registry", DBRunRegistry)

@@ -1,6 +1,7 @@
 import os
 
 from daqconf.consolidate import consolidate_db
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 
 
@@ -15,3 +16,6 @@ class FileRunRegistry(FSMAction):
         consolidate_db(_context.configuration.initial_data.split(":")[1], f"{dest}")
 
         return _input_data
+
+
+register_action("file-run-registry", FileRunRegistry)

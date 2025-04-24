@@ -2,11 +2,12 @@ import getpass
 from os import environ
 
 import conffwk
-from drunc.process_manager.oks_parser import collect_apps  # /!\
-from drunc.process_manager.utils import get_rte_script  # /!\
 from drunc_core.exceptions import DruncSetupException
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 from drunc_core.fsm.exceptions import ThreadPinningFailed
+from drunc_core.utils.configuration import collect_apps
+from drunc_core.utils.runtime import get_rte_script
 from drunc_core.utils.utils import get_logger
 from sh import Command, ErrorReturnCode
 
@@ -112,3 +113,6 @@ class ThreadPinning(FSMAction):
                 session=_context.configuration.oks_key.session,
             )
         return _input_data
+
+
+register_action("thread-pinning", ThreadPinning)

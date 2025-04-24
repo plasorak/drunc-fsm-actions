@@ -38,5 +38,8 @@ readme = {file = ["docs/README.md"]}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[project.entry-points."drunc.plugins"]
+fsm_actions = "drunc_fsm_actions.register_plugins:register_all_plugins"
+
 [tool.setuptools.package-data]
 "drunc.data.process_manager" = ["*.json"]

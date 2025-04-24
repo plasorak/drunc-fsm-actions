@@ -1,9 +1,11 @@
 import requests
-from drunc_core.fsm.actions.utils import get_dotdrunc_json, validate_run_type
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 from drunc_core.fsm.exceptions import CannotGetRunNumber, DotDruncJsonIncorrectFormat
 from drunc_core.utils.utils import get_logger
 from drunc_messages.opmon.generic_pb2 import RunInfo
+
+from drunc_fsm_actions.utils import get_dotdrunc_json, validate_run_type
 
 
 class UsvcProvidedRunNumber(FSMAction):
@@ -78,3 +80,6 @@ class UsvcProvidedRunNumber(FSMAction):
 
         self.run = req.json()[0][0][0]
         return self.run
+
+
+register_action("usvc-provided-run-number", UsvcProvidedRunNumber)

@@ -1,3 +1,4 @@
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 
 
@@ -20,3 +21,6 @@ class MasterSendFLCommand(FSMAction):
         _input_data["number_of_commands_to_send"] = number_of_commands_to_send
 
         return _input_data
+
+
+register_action("master-send-fl-command", MasterSendFLCommand)

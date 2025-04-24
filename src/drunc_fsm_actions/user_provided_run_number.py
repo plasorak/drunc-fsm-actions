@@ -1,6 +1,8 @@
-from drunc_core.fsm.actions.utils import validate_run_type
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 from drunc_messages.opmon.generic_pb2 import RunInfo
+
+from drunc_fsm_actions.utils import validate_run_type
 
 
 class UserProvidedRunNumber(FSMAction):
@@ -38,3 +40,6 @@ class UserProvidedRunNumber(FSMAction):
             )
 
         return _input_data
+
+
+register_action("user-provided-run-number", UserProvidedRunNumber)

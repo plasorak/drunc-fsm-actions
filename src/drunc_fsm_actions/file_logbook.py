@@ -1,3 +1,4 @@
+from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 from drunc_core.utils.utils import now_str
 
@@ -31,3 +32,6 @@ class FileLogbook(FSMAction):
                 f.write("\n")
 
         return _input_data
+
+
+register_action("file-logbook", FileLogbook)
