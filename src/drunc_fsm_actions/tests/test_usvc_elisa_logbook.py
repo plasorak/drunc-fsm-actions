@@ -3,7 +3,7 @@ from drunc_fsm_actions.usvc_elisa_logbook import ElisaLogbook
 from .conftest import MockConfiguration, MockController
 
 
-def test_usvc_elisa_logbook(dotdrunc_file):
+def test_usvc_elisa_logbook(dotdrunc_file) -> None:
     elisa_logbook = ElisaLogbook(
         configuration=MockConfiguration(parameters={"elisa_logbook": "some-detector"}),
         _dry_run=True,
@@ -18,8 +18,12 @@ def test_usvc_elisa_logbook(dotdrunc_file):
     kwargs = {"some stuff": 123, "some other stuff": 456}
 
     elisa_logbook.post_start(
-        _input_data=input_data, _context=MockController(), **kwargs
+        _input_data=input_data,
+        _context=MockController(),
+        **kwargs,
     )
     elisa_logbook.post_drain_dataflow(
-        _input_data=input_data, _context=MockController(), **kwargs
+        _input_data=input_data,
+        _context=MockController(),
+        **kwargs,
     )

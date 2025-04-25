@@ -1,16 +1,9 @@
-from enum import Enum
-
 from drunc_core.fsm.action_registry import register_action
 from drunc_core.fsm.core import FSMAction
 
 
-class an_enum(Enum):
-    ONE = 1
-    TWO = 2
-
-
 class SomeTestAction(FSMAction):
-    def __init__(self, configuration, _dry_run=False):
+    def __init__(self, configuration, _dry_run=False) -> None:
         super().__init__(name="test-action")
         self.dry_run = _dry_run
 
@@ -23,7 +16,6 @@ class SomeTestAction(FSMAction):
         some_float: float = 0.2,
         **kwargs,
     ) -> dict:
-        print(f"Running pre_conf of {self.name}")
         _input_data["some_int"] = some_int
         _input_data["some_str"] = some_str
         _input_data["some_float"] = some_float

@@ -13,14 +13,14 @@ from sh import Command, ErrorReturnCode
 
 
 class ThreadPinning(FSMAction):
-    def __init__(self, configuration, _dry_run=False):
+    def __init__(self, configuration, _dry_run=False) -> None:
         super().__init__(name="thread-pinning")
         self.log = get_logger("controller.thread-pinning")
         self.conf_dict = {p.name: p.value for p in configuration.parameters}
         # _dry_run is not used
         self.my_ssh = Command("/usr/bin/ssh")
 
-    def pin_thread(self, thread_pinning_file, configuration, session):
+    def pin_thread(self, thread_pinning_file, configuration, session) -> None:
         db = conffwk.Configuration(configuration)
         session_dal = db.get_dal(class_name="Session", uid=session)
 
@@ -40,7 +40,8 @@ class ThreadPinning(FSMAction):
         else:
             rte_script = get_rte_script()
             if not rte_script:
-                raise DruncSetupException("No RTE script found.")
+                msg = "No RTE script found."
+                raise DruncSetupException(msg)
 
             rte = rte_script
 
@@ -65,7 +66,8 @@ class ThreadPinning(FSMAction):
             try:
                 self.log.info(f"Executing '{cmd}'")
                 self.log.info(
-                    f"Applying thread pinning {cmd} file {thread_pinning_file} on {host}"
+                    f"Applying thread pinning {cmd} file {thread_pinning_file} on"
+                    f" {host}",
                 )
                 proc = self.my_ssh(
                     *arguments,
@@ -76,8 +78,8 @@ class ThreadPinning(FSMAction):
                     failed_hosts.add(f"{host}: {proc}")
                     continue
             except ErrorReturnCode as e:
-                self.log.error(e.stdout.decode("ascii"))
-                self.log.error(e.stderr.decode("ascii"))
+                self.log.exception(e.stdout.decode("ascii"))
+                self.log.exception(e.stderr.decode("ascii"))
                 failed_hosts.add(f"{host}: {e.stderr.decode('ascii')}")
                 continue
             except Exception as e:

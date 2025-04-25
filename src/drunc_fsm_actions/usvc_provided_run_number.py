@@ -9,7 +9,11 @@ from drunc_fsm_actions.utils import get_dotdrunc_json, validate_run_type
 
 
 class UsvcProvidedRunNumber(FSMAction):
-    def __init__(self, configuration, _dry_run=False):
+    def __init__(
+        self,
+        configuration: dict,  # noqa: ARG002
+        _dry_run: bool = False,  # noqa: FBT001, FBT002
+    ) -> None:
         self.log = get_logger("controller.usvc_run_number")
         super().__init__(name="usvc-provided-run-number")
         dotdrunc = get_dotdrunc_json()
@@ -19,8 +23,13 @@ class UsvcProvidedRunNumber(FSMAction):
             self.API_USER = dotdrunc["run_number_configuration"]["user"]
             self.API_PSWD = dotdrunc["run_number_configuration"]["password"]
         except KeyError as exc:
+            msg = (
+                "Malformed ~/.drunc.json, missing a key in the"
+                " 'run_number_configuration' section, or the entire"
+                " 'run_number_configuration' section"
+            )
             raise DotDruncJsonIncorrectFormat(
-                "Malformed ~/.drunc.json, missing a key in the 'run_number_configuration' section, or the entire 'run_number_configuration' section"
+                msg,
             ) from exc
 
         self.timeout = 0.5
@@ -28,12 +37,12 @@ class UsvcProvidedRunNumber(FSMAction):
     def pre_start(
         self,
         _input_data: dict,
-        _context,
+        _context: "drunc.controller.controller.Controller",  # noqa: F821
         run_type: str = "TEST",
-        disable_data_storage: bool = False,
         trigger_rate: float = 0.0,
-        **kwargs,
-    ):
+        disable_data_storage: bool = False,  # noqa: FBT001, FBT002
+        **_: dict,
+    ) -> dict:
         run_type = validate_run_type(run_type.upper())
         _input_data["production_vs_test"] = run_type
         _input_data["run"] = self._getnew_run_number()
@@ -56,7 +65,7 @@ class UsvcProvidedRunNumber(FSMAction):
 
         return _input_data
 
-    def _getnew_run_number(self):
+    def _getnew_run_number(self) -> int:
         if self.dry_run:
             return 1
         try:
@@ -67,18 +76,21 @@ class UsvcProvidedRunNumber(FSMAction):
             )
             req.raise_for_status()
         except requests.HTTPError as exc:
-            error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
-            self.log.error(error)
+            error = (
+                "HTTP Error (maybe failed auth, maybe ill-formed"
+                f"post message, ...) using {__name__}"
+            )
+            self.log.exception(error)
             raise CannotGetRunNumber(error) from exc
         except requests.ConnectionError as exc:
             error = (
-                f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
+                f"Connection to {self.API_SOCKET} wasn't successful using {__name__}"
             )
-            self.log.error(error)
+            self.log.exception(error)
             raise CannotGetRunNumber(error) from exc
         except requests.Timeout as exc:
-            error = f"connection to {self.API_SOCKET} timed out using {__name__}"
-            self.log.error(error)
+            error = f"Connection to {self.API_SOCKET} timed out using {__name__}"
+            self.log.exception(error)
             raise CannotGetRunNumber(error) from exc
 
         self.run = req.json()[0][0][0]

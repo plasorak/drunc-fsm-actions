@@ -9,7 +9,7 @@ from drunc_core.fsm.exceptions import DotDruncJsonIncorrectFormat, DotDruncJsonN
 from drunc_fsm_actions.utils import get_dotdrunc_json, setenv, validate_run_type
 
 
-def test_setenv():
+def test_setenv() -> None:
     with setenv("SOME_ENV_VAR", "bla"):
         assert os.getenv("SOME_ENV_VAR") == "bla"
 
@@ -21,7 +21,7 @@ def test_setenv():
     assert os.getenv("SOME_ENV_VAR") is None
 
 
-def test_get_dotdrunc_json(dotdrunc_data):
+def test_get_dotdrunc_json(dotdrunc_data) -> None:
     with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
         f.write(json.dumps(dotdrunc_data))
         f.flush()
@@ -52,7 +52,7 @@ def test_get_dotdrunc_json(dotdrunc_data):
             get_dotdrunc_json(f.name)
 
 
-def test_validate_run_type():
+def test_validate_run_type() -> None:
     assert validate_run_type("PROD") == "PROD"
     assert validate_run_type("TEST") == "TEST"
     with pytest.raises(DruncException):

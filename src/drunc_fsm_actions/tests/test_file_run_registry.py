@@ -5,7 +5,7 @@ from drunc_fsm_actions.file_run_registry import FileRunRegistry
 from .conftest import MockController
 
 
-def test_file_run_registry(dotdrunc_file):
+def test_file_run_registry(dotdrunc_file) -> None:
     file_run_registry = FileRunRegistry(
         configuration=None,
         _dry_run=True,

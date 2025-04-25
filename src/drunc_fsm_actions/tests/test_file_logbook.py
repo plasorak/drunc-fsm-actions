@@ -5,7 +5,7 @@ from drunc_fsm_actions.file_logbook import FileLogbook
 from .conftest import MockConfiguration, MockController
 
 
-def test_file_logbook(dotdrunc_file):
+def test_file_logbook(dotdrunc_file) -> None:
     configuration = MockConfiguration(file_parameters=["file_name"])
     file_logbook = FileLogbook(
         configuration=configuration,

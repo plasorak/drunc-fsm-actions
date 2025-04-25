@@ -3,7 +3,7 @@ from drunc_core.fsm.core import FSMAction
 
 
 class MasterSendFLCommand(FSMAction):
-    def __init__(self, configuration, _dry_run=False):
+    def __init__(self, configuration, _dry_run=False) -> None:
         super().__init__(name="master-send-fl-command")
         self.dry_run = _dry_run
 

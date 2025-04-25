@@ -1,8 +1,13 @@
-exclude = ["tests/*"]
-
 [lint]
 ignore = ["ALL"]
 select = [
     "F",   # PyFlakes
     "I"   # Isort
 ]
+# ignore = ["D"]
+# select = ["ALL"]
+
+
+[lint.per-file-ignores]
+"src/drunc_fsm_actions/tests/*.py" = ["S101"]
+"src/drunc_fsm_actions/tests/timing*.py" = ["S101"]

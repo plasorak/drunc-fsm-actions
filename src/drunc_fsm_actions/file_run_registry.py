@@ -6,7 +6,7 @@ from drunc_core.fsm.core import FSMAction
 
 
 class FileRunRegistry(FSMAction):
-    def __init__(self, configuration, _dry_run=False):
+    def __init__(self, configuration, _dry_run=False) -> None:
         super().__init__(name="file-run-registry")
         self.configuration = configuration
         self.dry_run = _dry_run

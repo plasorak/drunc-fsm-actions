@@ -3,7 +3,7 @@ from drunc_fsm_actions.db_run_registry import DBRunRegistry
 from .conftest import MockController
 
 
-def test_db_run_registry(dotdrunc_file):
+def test_db_run_registry(dotdrunc_file) -> None:
     db_run_registry = DBRunRegistry(
         configuration=None,
         _dry_run=True,
@@ -19,6 +19,8 @@ def test_db_run_registry(dotdrunc_file):
     assert kwargs == initial_kwargs
     input_data = {}
     db_run_registry.post_drain_dataflow(
-        _input_data=input_data, _context=context, **kwargs
+        _input_data=input_data,
+        _context=context,
+        **kwargs,
     )
     assert kwargs == initial_kwargs

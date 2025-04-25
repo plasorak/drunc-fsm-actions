@@ -7,7 +7,7 @@ from drunc_fsm_actions.thread_pinning import ThreadPinning, ThreadPinningFailed
 from .conftest import MockConfiguration, MockController
 
 
-def test_thread_pinning(dotdrunc_file):
+def test_thread_pinning(dotdrunc_file) -> None:
     parameters = {
         "post_conf": "pinning_file.junk",
         "post_start": "pinning_file.junk",

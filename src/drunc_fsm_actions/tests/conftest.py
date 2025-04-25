@@ -50,7 +50,7 @@ class MockConfiguration:
 
 
 class MockActor:
-    def get_user_name(self):
+    def get_user_name(self) -> str:
         return "jcvandamme"
 
 
@@ -63,19 +63,23 @@ class MockController:
 
 
 class MockFileNameParameter:
-    def __init__(self, name="file_name"):
+    def __init__(self, name="file_name") -> None:
         self.name = name
         self.value = tempfile.NamedTemporaryFile(delete=True).name
 
 
 class MockParameter:
-    def __init__(self, name, value):
+    def __init__(self, name, value) -> None:
         self.name = name
         self.value = value
 
 
 class MockConfiguration:
-    def __init__(self, parameters={}, file_parameters=[]):
+    def __init__(self, parameters=None, file_parameters=None) -> None:
+        if file_parameters is None:
+            file_parameters = []
+        if parameters is None:
+            parameters = {}
         self.parameters = [
             MockParameter(name, value) for name, value in parameters.items()
         ]

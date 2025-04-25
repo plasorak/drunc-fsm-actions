@@ -1,6 +1,7 @@
 import json
 import os
 from contextlib import contextmanager
+from pathlib import Path
 
 from drunc_core.fsm.exceptions import (
     DotDruncJsonIncorrectFormat,
@@ -11,7 +12,7 @@ from drunc_core.utils.utils import expand_path
 
 
 @contextmanager
-def setenv(key, value):
+def setenv(key: str, value: str | bool | float) -> None:
     old_value = os.environ.get(key)
     os.environ[key] = value
     try:
@@ -28,26 +29,29 @@ def validate_run_type(run_type: str) -> str:
     :param run_type: the run type
     :return: the validated run type
     """
-    RUN_TYPES = ["PROD", "TEST"]
-    if run_type not in RUN_TYPES:
+    run_types = ["PROD", "TEST"]
+    if run_type not in run_types:
+        msg = f"Invalid run type: '{run_type}'. Must be one of {run_types}"
         raise InvalidRunType(
-            f"Invalid run type: '{run_type}'. Must be one of {RUN_TYPES}"
+            msg,
         )
     return run_type
 
 
-def get_dotdrunc_json(path: str = None):
+def get_dotdrunc_json(path: str | None = None) -> dict:
     if path is None:
         path = os.getenv("DOTDRUNC_JSON", "~/.drunc.json")
 
     try:
-        f = open(expand_path(path))
-        dotdrunc = json.load(f)
-    except FileNotFoundError:
-        raise DotDruncJsonNotFound(f"dotdrunc file not found: '{path}'")
+        with Path(expand_path(path)).open() as f:
+            dotdrunc = json.load(f)
+    except FileNotFoundError as exc:
+        msg = f"dotdrunc file not found: '{path}'"
+        raise DotDruncJsonNotFound(msg) from exc
     except json.JSONDecodeError as exc:
+        msg = f"dotdrunc file is not a valid JSON: '{path}'"
         raise DotDruncJsonIncorrectFormat(
-            f"dotdrunc file is not a valid JSON: '{path}'"
+            msg,
         ) from exc
 
     expected_keys = [
@@ -57,8 +61,9 @@ def get_dotdrunc_json(path: str = None):
     ]
 
     if not all(key in dotdrunc for key in expected_keys):
+        msg = f"dotdrunc file is missing some expected keys: {expected_keys}"
         raise DotDruncJsonIncorrectFormat(
-            f"dotdrunc file is missing some expected keys: {expected_keys}"
+            msg,
         )
 
     return dotdrunc
