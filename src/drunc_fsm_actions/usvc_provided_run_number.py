@@ -9,10 +9,11 @@ from drunc_fsm_actions.utils import get_dotdrunc_json, validate_run_type
 
 
 class UsvcProvidedRunNumber(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         self.log = get_logger("controller.usvc_run_number")
         super().__init__(name="usvc-provided-run-number")
         dotdrunc = get_dotdrunc_json()
+        self.dry_run = _dry_run
         try:
             self.API_SOCKET = dotdrunc["run_number_configuration"]["socket"]
             self.API_USER = dotdrunc["run_number_configuration"]["user"]
@@ -56,6 +57,8 @@ class UsvcProvidedRunNumber(FSMAction):
         return _input_data
 
     def _getnew_run_number(self):
+        if self.dry_run:
+            return 1
         try:
             req = requests.get(
                 self.API_SOCKET + "/runnumber/getnew",

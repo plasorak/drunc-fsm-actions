@@ -11,9 +11,10 @@ from drunc_fsm_actions.utils import get_dotdrunc_json
 
 
 class ElisaLogbook(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         super().__init__(name="elisa-logbook")
         self.log = get_logger("controller.elisa-logbook")
+        self.dry_run = _dry_run
 
         dotdrunc = get_dotdrunc_json()
 
@@ -105,22 +106,21 @@ class ElisaLogbook(FSMAction):
             "systems": ["daq"],
         }
         url = f"{self.API_SOCKET}/v1/elisaLogbook/new_message/"
-        try:
-            r = requests.post(url, auth=(self.API_USER, self.API_PASS), json=data)
-            r.raise_for_status()
-            response = r.json()
-            self.thread_id = response["thread_id"]
-            self.log.info(f"ELisA logbook: Sent message (ID{self.thread_id})")
-        except requests.HTTPError:
-            error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
-            self.log.warning(CannotSendElisaMessage(error).message)
-        except requests.ConnectionError:
-            error = (
-                f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
-            )
-            self.log.warning(CannotSendElisaMessage(error).message)
-        except requests.Timeout:
-            error = f"connection to {self.API_SOCKET} timed out using {__name__}"
+        if not self.dry_run:
+            try:
+                r = requests.post(url, auth=(self.API_USER, self.API_PASS), json=data)
+                r.raise_for_status()
+                response = r.json()
+                self.thread_id = response["thread_id"]
+                self.log.info(f"ELisA logbook: Sent message (ID{self.thread_id})")
+            except requests.HTTPError:
+                error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
+                self.log.warning(CannotSendElisaMessage(error).message)
+            except requests.ConnectionError:
+                error = f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
+                self.log.warning(CannotSendElisaMessage(error).message)
+            except requests.Timeout:
+                error = f"connection to {self.API_SOCKET} timed out using {__name__}"
             self.log.warning(CannotSendElisaMessage(error).message)
 
         return _input_data
@@ -147,22 +147,23 @@ class ElisaLogbook(FSMAction):
             "id": self.thread_id,
         }
         url = f"{self.API_SOCKET}/v1/elisaLogbook/reply_to_message/"
-        try:
-            r = requests.put(url, auth=(self.API_USER, self.API_PASS), json=data)
-            r.raise_for_status()
-            response = r.json()
-            self.log.info(f"ELisA logbook: Sent message (ID{response['thread_id']})")
-        except requests.HTTPError:
-            error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
-            self.log.warning(CannotSendElisaMessage(error).message)
-        except requests.ConnectionError:
-            error = (
-                f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
-            )
-            self.log.warning(CannotSendElisaMessage(error).message)
-        except requests.Timeout:
-            error = f"connection to {self.API_SOCKET} timed out using {__name__}"
-            self.log.warning(CannotSendElisaMessage(error).message)
+        if not self.dry_run:
+            try:
+                r = requests.put(url, auth=(self.API_USER, self.API_PASS), json=data)
+                r.raise_for_status()
+                response = r.json()
+                self.log.info(
+                    f"ELisA logbook: Sent message (ID{response['thread_id']})"
+                )
+            except requests.HTTPError:
+                error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
+                self.log.warning(CannotSendElisaMessage(error).message)
+            except requests.ConnectionError:
+                error = f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
+                self.log.warning(CannotSendElisaMessage(error).message)
+            except requests.Timeout:
+                error = f"connection to {self.API_SOCKET} timed out using {__name__}"
+                self.log.warning(CannotSendElisaMessage(error).message)
 
         return _input_data
 

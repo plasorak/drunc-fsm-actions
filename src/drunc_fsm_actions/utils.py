@@ -1,4 +1,6 @@
 import json
+import os
+from contextlib import contextmanager
 
 from drunc_core.fsm.exceptions import (
     DotDruncJsonIncorrectFormat,
@@ -6,6 +8,19 @@ from drunc_core.fsm.exceptions import (
     InvalidRunType,
 )
 from drunc_core.utils.utils import expand_path
+
+
+@contextmanager
+def setenv(key, value):
+    old_value = os.environ.get(key)
+    os.environ[key] = value
+    try:
+        yield
+    finally:
+        if old_value is None:
+            del os.environ[key]
+        else:
+            os.environ[key] = old_value
 
 
 def validate_run_type(run_type: str) -> str:
@@ -21,7 +36,10 @@ def validate_run_type(run_type: str) -> str:
     return run_type
 
 
-def get_dotdrunc_json(path: str = "~/.drunc.json"):
+def get_dotdrunc_json(path: str = None):
+    if path is None:
+        path = os.getenv("DOTDRUNC_JSON", "~/.drunc.json")
+
     try:
         f = open(expand_path(path))
         dotdrunc = json.load(f)

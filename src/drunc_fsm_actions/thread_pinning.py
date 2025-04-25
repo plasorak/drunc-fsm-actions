@@ -13,10 +13,12 @@ from sh import Command, ErrorReturnCode
 
 
 class ThreadPinning(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         super().__init__(name="thread-pinning")
         self.log = get_logger("controller.thread-pinning")
         self.conf_dict = {p.name: p.value for p in configuration.parameters}
+        # _dry_run is not used
+        self.my_ssh = Command("/usr/bin/ssh")
 
     def pin_thread(self, thread_pinning_file, configuration, session):
         db = conffwk.Configuration(configuration)
@@ -51,8 +53,6 @@ class ThreadPinning(FSMAction):
         for app in apps:
             hosts.add(app["host"])
 
-        my_ssh = Command("/usr/bin/ssh")
-
         failed_hosts = set()
 
         for host in hosts:
@@ -67,11 +67,14 @@ class ThreadPinning(FSMAction):
                 self.log.info(
                     f"Applying thread pinning {cmd} file {thread_pinning_file} on {host}"
                 )
-                proc = my_ssh(
+                proc = self.my_ssh(
                     *arguments,
                     _err_to_out=True,
                 )
                 self.log.info(proc)
+                if "No such file or directory:" in proc:
+                    failed_hosts.add(f"{host}: {proc}")
+                    continue
             except ErrorReturnCode as e:
                 self.log.error(e.stdout.decode("ascii"))
                 self.log.error(e.stderr.decode("ascii"))

@@ -3,7 +3,7 @@ from drunc_core.fsm.core import FSMAction
 
 
 class TriggerRateSpecifier(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         super().__init__(name="trigger-rate-specifier")
 
     def pre_change_rate(

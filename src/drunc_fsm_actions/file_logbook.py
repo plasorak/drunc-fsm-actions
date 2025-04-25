@@ -4,8 +4,9 @@ from drunc_core.utils.utils import now_str
 
 
 class FileLogbook(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         super().__init__(name="file-logbook")
+        self.dry_run = _dry_run
         self.conf_dict = {p.name: p.value for p in configuration.parameters}
         self.file = self.conf_dict["file_name"]
 

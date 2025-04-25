@@ -10,8 +10,9 @@ class an_enum(Enum):
 
 
 class SomeTestAction(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         super().__init__(name="test-action")
+        self.dry_run = _dry_run
 
     def pre_conf(
         self,

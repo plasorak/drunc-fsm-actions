@@ -19,9 +19,10 @@ from drunc_fsm_actions.utils import get_dotdrunc_json
 
 
 class DBRunRegistry(FSMAction):
-    def __init__(self, configuration):
+    def __init__(self, configuration, _dry_run=False):
         super().__init__(name="db-run-registry")
         self.log = get_logger("controller.usvc_db_run_registry")
+        self.dry_run = _dry_run
 
         dotdrunc = get_dotdrunc_json()
         try:
@@ -86,54 +87,58 @@ class DBRunRegistry(FSMAction):
                 "software_version": software_version,
             }
 
-            try:
-                r = requests.post(
-                    self.API_SOCKET + "/runregistry/insertRun/",
-                    files=files,
-                    data=post_data,
-                    auth=(self.API_USER, self.API_PSWD),
-                    timeout=self.timeout,
-                )
-                r.raise_for_status()
-            except requests.HTTPError as exc:
-                error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
-                self.log.error(error)
-                raise CannotInsertRunNumber(error) from exc
-            except requests.ConnectionError as exc:
-                error = f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
-                self.log.error(error)
-                raise CannotInsertRunNumber(error) from exc
-            except requests.Timeout as exc:
-                error = f"connection to {self.API_SOCKET} timed out using {__name__}"
-                self.log.error(error)
-                raise CannotInsertRunNumber(error) from exc
+            if not self.dry_run:
+                try:
+                    r = requests.post(
+                        self.API_SOCKET + "/runregistry/insertRun/",
+                        files=files,
+                        data=post_data,
+                        auth=(self.API_USER, self.API_PSWD),
+                        timeout=self.timeout,
+                    )
+                    r.raise_for_status()
+                except requests.HTTPError as exc:
+                    error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
+                    self.log.error(error)
+                    raise CannotInsertRunNumber(error) from exc
+                except requests.ConnectionError as exc:
+                    error = f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
+                    self.log.error(error)
+                    raise CannotInsertRunNumber(error) from exc
+                except requests.Timeout as exc:
+                    error = (
+                        f"connection to {self.API_SOCKET} timed out using {__name__}"
+                    )
+                    self.log.error(error)
+                    raise CannotInsertRunNumber(error) from exc
 
         # can be removed if we use delete_on_close=False in f_tar
         os.remove(tar_name)
         return _input_data
 
     def post_drain_dataflow(self, _input_data, _context, **kwargs):
-        try:
-            requests.get(
-                self.API_SOCKET + "/runregistry/updateStopTime/" + str(self.run_number),
-                auth=(self.API_USER, self.API_PSWD),
-                timeout=self.timeout,
-            )
+        if not self.dry_run:
+            try:
+                requests.get(
+                    self.API_SOCKET
+                    + "/runregistry/updateStopTime/"
+                    + str(self.run_number),
+                    auth=(self.API_USER, self.API_PSWD),
+                    timeout=self.timeout,
+                )
 
-        except requests.HTTPError as exc:
-            error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
-            self.log.error(error)
-            raise CannotUpdateStopTime(error) from exc
-        except requests.ConnectionError as exc:
-            error = (
-                f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
-            )
-            self.log.error(error)
-            raise CannotUpdateStopTime(error) from exc
-        except requests.Timeout as exc:
-            error = f"connection to {self.API_SOCKET} timed out using {__name__}"
-            self.log.error(error)
-            raise CannotUpdateStopTime(error) from exc
+            except requests.HTTPError as exc:
+                error = f"of HTTP Error (maybe failed auth, maybe ill-formed post message, ...) using {__name__}"
+                self.log.error(error)
+                raise CannotUpdateStopTime(error) from exc
+            except requests.ConnectionError as exc:
+                error = f"connection to {self.API_SOCKET} wasn't successful using {__name__}"
+                self.log.error(error)
+                raise CannotUpdateStopTime(error) from exc
+            except requests.Timeout as exc:
+                error = f"connection to {self.API_SOCKET} timed out using {__name__}"
+                self.log.error(error)
+                raise CannotUpdateStopTime(error) from exc
 
 
 register_action("db-run-registry", DBRunRegistry)

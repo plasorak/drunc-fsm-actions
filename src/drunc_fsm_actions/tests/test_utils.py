@@ -6,36 +6,36 @@ import pytest
 from drunc_core.exceptions import DruncException
 from drunc_core.fsm.exceptions import DotDruncJsonIncorrectFormat, DotDruncJsonNotFound
 
-from drunc_fsm_actions.utils import get_dotdrunc_json, validate_run_type
-
-dotdrunc_json = {
-    "run_registry_configuration": {
-        "socket": "http://bananas:1234",
-        "user": "jcvandamme",
-        "password": "karate",
-    },
-    "run_number_configuration": {
-        "socket": "http://bananas:1234",
-        "user": "jcvandamme",
-        "password": "karate",
-    },
-    "elisa_configuration": {
-        "some-detector": {
-            "socket": "http://bananas:1234",
-            "user": "jcvandamme",
-            "password": "karate",
-        },
-    },
-}
+from drunc_fsm_actions.utils import get_dotdrunc_json, setenv, validate_run_type
 
 
-def test_get_dotdrunc_json():
+def test_setenv():
+    with setenv("SOME_ENV_VAR", "bla"):
+        assert os.getenv("SOME_ENV_VAR") == "bla"
+
+        with setenv("SOME_ENV_VAR", "bla2"):
+            assert os.getenv("SOME_ENV_VAR") == "bla2"
+
+        assert os.getenv("SOME_ENV_VAR") == "bla"
+
+    assert os.getenv("SOME_ENV_VAR") is None
+
+
+def test_get_dotdrunc_json(dotdrunc_data):
     with tempfile.NamedTemporaryFile(delete=True, mode="w") as f:
-        f.write(json.dumps(dotdrunc_json))
+        f.write(json.dumps(dotdrunc_data))
         f.flush()
 
         dotdrunc = get_dotdrunc_json(f.name)
         assert dotdrunc is not None
+
+        with setenv("DOTDRUNC_JSON", f.name):
+            dotdrunc = get_dotdrunc_json()
+            assert dotdrunc is not None
+
+        with setenv("DOTDRUNC_JSON", "nonexistent_path"):
+            with pytest.raises(DotDruncJsonNotFound):
+                get_dotdrunc_json()
 
     if os.path.exists(os.path.expanduser("~/.drunc.json")):
         dotdrunc = get_dotdrunc_json()
